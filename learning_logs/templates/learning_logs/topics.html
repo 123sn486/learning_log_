@@ -9,6 +9,7 @@
         {% for topic in topics %}
     	    <li>
                 <a href="{% url 'learning_logs:topic' topic.id %}">{{ topic }}</a>
+                <a href="{% url 'learning_logs:delete_topic' topic.id %}">deletetopic</a>
             </li>
         {% endfor %}
     </ol>

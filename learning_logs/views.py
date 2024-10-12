@@ -67,3 +67,24 @@ def edit_entry(request, entry_id):
 
     context = {'entry': entry, 'form': form}
     return render(request, 'learning_logs/edit_entry.html', context)
+
+
+def delete_entry(request, entry_id):
+    """Delete an existing entry."""
+    entry = Entry.objects.get(id=entry_id)
+    topic = entry.topic
+    entry.delete()
+    context = {'entry': entry, 'topic': topic}
+    return render(request, 'learning_logs/delete_entry.html', context)
+
+def delete_entry(request, entry_id):
+    """Delete an existing entry."""
+    entry = Entry.objects.get(id=entry_id)
+    topic = entry.topic
+    entry.delete()
+    context = {'entry': entry, 'topic': topic}
+    return redirect('learning_logs:topic', topic_id=topic.id)
+def delete_topic(request, topic_id):
+    topic = Topic.objects.get(id=topic_id)
+    topic.delete()
+    return redirect('learning_logs:topics')
