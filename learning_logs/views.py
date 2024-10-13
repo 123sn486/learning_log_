@@ -1,13 +1,16 @@
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
 
 from .forms import TopicForm, EntryForm
 from .models import Topic, Entry
+
 
 # Create your views here.
 def index(request):
     return render(request, 'learning_logs/index.html')
 
 
+@login_required
 def topics(request):
     """Show all topics."""
     topics = Topic.objects.order_by('date_added')
@@ -15,6 +18,7 @@ def topics(request):
     return render(request, 'learning_logs/topics.html', context)
 
 
+@login_required
 def topic(request, topic_id):
     """Show a topic and all its entries."""
     topic = Topic.objects.get(id=topic_id)
@@ -23,6 +27,7 @@ def topic(request, topic_id):
     return render(request, 'learning_logs/topic.html', context)
 
 
+@login_required
 def new_topic(request):
     """Add a new topic."""
     if request.method != 'POST':
@@ -36,13 +41,14 @@ def new_topic(request):
     return render(request, 'learning_logs/new_topic.html', context)
 
 
+@login_required
 def new_entry(request, topic_id):
     topic = Topic.objects.get(id=topic_id)
     myvar = "Hello World"
 
-    if request.method != 'POST':    # bu bir GET isteğidir
+    if request.method != 'POST':  # bu bir GET isteğidir
         form = EntryForm()
-    else:                           # POST isteği
+    else:  # POST isteği
         form = EntryForm(request.POST)
         if form.is_valid():
             new_entry = form.save(commit=False)
@@ -54,12 +60,13 @@ def new_entry(request, topic_id):
     return render(request, 'learning_logs/new_entry.html', context)
 
 
+@login_required
 def edit_entry(request, entry_id):
     entry = Entry.objects.get(id=entry_id)
 
-    if request.method != 'POST':   # Burası GET
+    if request.method != 'POST':  # Burası GET
         form = EntryForm(instance=entry)
-    else:                          # Burası POST
+    else:  # Burası POST
         form = EntryForm(instance=entry, data=request.POST)
         if form.is_valid():
             form.save()
@@ -69,6 +76,7 @@ def edit_entry(request, entry_id):
     return render(request, 'learning_logs/edit_entry.html', context)
 
 
+@login_required
 def delete_entry(request, entry_id):
     """Delete an existing entry."""
     entry = Entry.objects.get(id=entry_id)
@@ -77,6 +85,8 @@ def delete_entry(request, entry_id):
     context = {'entry': entry, 'topic': topic}
     return render(request, 'learning_logs/delete_entry.html', context)
 
+
+@login_required
 def delete_entry(request, entry_id):
     """Delete an existing entry."""
     entry = Entry.objects.get(id=entry_id)
@@ -84,6 +94,9 @@ def delete_entry(request, entry_id):
     entry.delete()
     context = {'entry': entry, 'topic': topic}
     return redirect('learning_logs:topic', topic_id=topic.id)
+
+
+@login_required
 def delete_topic(request, topic_id):
     topic = Topic.objects.get(id=topic_id)
     topic.delete()
